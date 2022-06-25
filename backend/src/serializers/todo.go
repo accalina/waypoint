@@ -5,6 +5,6 @@ type CreateTodoSerializer struct {
 }
 
 type UpdateTodoSerializer struct {
-	Content string `json:"content"`
-	IsDone  bool   `json:"is_done"`
+	Content *string `json:"content"`
+	IsDone  *bool   `json:"is_done"`
 }

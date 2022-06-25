@@ -10,7 +10,8 @@ import (
 
 func GetTodo(c *gin.Context) {
 	var todos []models.Todo
-	models.DB.Find(&todos)
+	// models.DB.Find(&todos)
+	models.DB.Where("is_delete = false").Find(&todos)
 
 	c.JSON(http.StatusOK, gin.H{"data": todos})
 }
@@ -53,12 +54,14 @@ func UpdateTodo(c *gin.Context) {
 		return
 	}
 
-	db_data := models.Todo{
-		Content: input.Content,
-		IsDone:  input.IsDone}
-	models.DB.Model(&todo).Updates(&db_data)
+	payload := map[string]interface{}{
+		"content": input.Content,
+		"is_done": input.IsDone,
+	}
 
-	c.JSON(http.StatusOK, gin.H{"data": input.IsDone})
+	models.DB.Model(&todo).Updates(&payload)
+
+	c.JSON(http.StatusOK, gin.H{"data": todo})
 }
 
 func DeleteTodo(c *gin.Context) {
@@ -68,8 +71,8 @@ func DeleteTodo(c *gin.Context) {
 		return
 	}
 
-	db_data := models.Todo{IsDelete: true}
-	models.DB.Model(&todo).Updates(&db_data)
+	payload := map[string]interface{}{"is_delete": true}
+	models.DB.Model(&todo).Updates(&payload)
 
 	c.JSON(http.StatusOK, gin.H{"data": todo})
 }
